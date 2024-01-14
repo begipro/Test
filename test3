@@ -1,0 +1,73 @@
+#include "rpcWiFi.h"
+#include "TFT_eSPI.h"
+
+TFT_eSPI tft;
+
+void setup() {
+
+  tft.begin();
+  tft.setRotation(3);
+  tft.fillScreen(TFT_BLACK);
+  tft.setTextColor(TFT_WHITE);
+  digitalWrite(LCD_BACKLIGHT, HIGH);
+  tft.setTextSize(1);
+
+  pinMode(WIO_5S_PRESS, INPUT_PULLUP);
+
+  // Serial.begin(115200);
+  // while (!Serial)
+  //   ;  // Wait for Serial to be ready
+  // delay(1000);
+
+  // Set WiFi to station mode and disconnect from an AP if it was previously connected
+  WiFi.mode(WIFI_STA);
+  WiFi.disconnect();
+  delay(100);
+
+  // Serial.println("Setup done");
+  tft.drawString("Setup done", 0, 10);
+
+  tft.fillScreen(TFT_BLACK);
+}
+
+void loop() {
+  
+  // Serial.println("push WIO_5S_PRESS");
+  tft.drawString("push WIO_5S_PRESS", 0, 10);
+
+  while (digitalRead(WIO_5S_PRESS) != LOW);
+  // Serial.println("scan start");
+  tft.drawString("scan start", 0, 20);
+  // WiFi.scanNetworks will return the number of networks found
+  int n = WiFi.scanNetworks();
+  // Serial.println("scan done");
+  tft.drawString("scan done", 0, 30);
+  delay(500);
+  tft.fillScreen(TFT_BLACK);
+  if (n == 0) {
+    // Serial.println("no networks found");
+    tft.drawString("no networks found", 0, 0);
+    tft.fillScreen(TFT_BLACK);
+    while (digitalRead(WIO_5S_PRESS) != LOW);
+  } else {
+    // Serial.print(String(n) + " networks found");
+    tft.drawString(String(n) + " networks found", 0, 0);
+    for (int i = 0; i < n; ++i) {
+      // Print SSID and RSSI for each network found
+      // Serial.print(i + 1);
+      // Serial.print(": ");
+      // Serial.print(WiFi.SSID(i));
+      // Serial.print(" (");
+      // Serial.print(WiFi.RSSI(i));
+      // Serial.print(")");
+      // Serial.println((WiFi.encryptionType(i) == WIFI_AUTH_OPEN) ? " " : "*");
+      tft.drawString(String(i + 1) + ": " + WiFi.SSID(i) + " (" + WiFi.RSSI(i) + ")" + ((WiFi.encryptionType(i) == WIFI_AUTH_OPEN) ? " " : "*"), 0, 10 + i * 8);
+    }
+    while (digitalRead(WIO_5S_PRESS) != LOW);
+    tft.fillScreen(TFT_BLACK);
+  }
+  // Serial.println("");
+
+  // Wait a bit before scanning again
+  delay(5000);
+}
