@@ -1,0 +1,51 @@
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(WIO_5S_PRESS, INPUT_PULLUP);
+  pinMode(WIO_KEY_A, INPUT_PULLUP);
+  pinMode(WIO_KEY_B, INPUT_PULLUP);
+  pinMode(WIO_KEY_C, INPUT_PULLUP);
+  attachInterrupt(WIO_5S_PRESS, interrupttest, FALLING);
+  attachInterrupt(WIO_KEY_A, interrupttestA, FALLING);
+  attachInterrupt(WIO_KEY_B, interrupttestB, FALLING);
+  attachInterrupt(WIO_KEY_C, interrupttestC, FALLING);
+
+
+  Serial.begin(115200);
+  while (!Serial)
+    ;  // Wait for Serial to be ready
+  delay(1000);
+  Serial.print("setup");
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+}
+
+void interrupttest() {
+  delay(500);
+  if (digitalRead(WIO_5S_PRESS) != LOW) {
+    return;
+  }
+  Serial.print("interrupt");
+}
+void interrupttestA() {
+  delay(500);
+  if (digitalRead(WIO_KEY_A) != LOW) {
+    return;
+  }
+  Serial.print("interrupt A");
+}
+void interrupttestB() {
+  delay(500);
+  if (digitalRead(WIO_KEY_B) != LOW) {
+    return;
+  }
+  Serial.print("interrupt B");
+}
+void interrupttestC() {
+  delay(500);
+  if (digitalRead(WIO_KEY_C) != LOW) {
+    return;
+  }
+  Serial.print("interrupt C");
+}
